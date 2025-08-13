@@ -1,7 +1,7 @@
-import { AudioPlayer } from "./audio/AudioPlayer";
+import { AudioPlayer } from "./AudioPlayer";
 import { useTts } from "@/hooks/useTts";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 
 interface BaselineAudioPlayerProps {
   text: string;

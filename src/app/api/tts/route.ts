@@ -9,7 +9,7 @@ const ttsSchema = z.object({
 	// Smart Speed parameters
 	voice_id: z.string().optional(),
 	model_id: z.string().optional(),
-	speed: z.number().min(0.7).max(1.2).optional(),
+	speed: z.number().min(0.75).max(3.0).optional(),
 	apply_text_normalization: z.enum(["on", "off"]).optional(),
 });
 
