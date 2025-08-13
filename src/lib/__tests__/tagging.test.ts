@@ -5,7 +5,7 @@ import { V1_PRESETS } from "../../constants/voice-presets";
 function simulateManualSpeedTransform(text: string, speed: number) {
 	const cleanText = text.trim();
 	const wordCount = cleanText.split(/\s+/).length;
-	const maxBreaks = Math.floor((wordCount / 100) * 3);
+	const maxBreaks = Math.max(1, Math.floor((wordCount / 100) * 3)); // Ensure at least 1 break for testing
 
 	// Overcast-like Smart Speed: shorten silences at natural boundaries
 	const sentenceMatches = [...cleanText.matchAll(/[.!?]+\"?/g)];
@@ -152,8 +152,8 @@ describe("Manual Speed Adjustment Logic", () => {
 		const fastBreaks = [...fastResult.taggedText.matchAll(/<break time="(\d+)ms" \/>/g)].map(m => parseInt(m[1]));
 
 		// Fast speed should have shorter breaks on average
-		const slowAvg = slowBreaks.reduce((a, b) => a + b, 0) / slowBreaks.length;
-		const fastAvg = fastBreaks.reduce((a, b) => a + b, 0) / fastBreaks.length;
+		const slowAvg = slowBreaks.length > 0 ? slowBreaks.reduce((a, b) => a + b, 0) / slowBreaks.length : 0;
+		const fastAvg = fastBreaks.length > 0 ? fastBreaks.reduce((a, b) => a + b, 0) / fastBreaks.length : 0;
 
 		expect(fastAvg).toBeLessThan(slowAvg);
 		expect(slowAvg).toBeGreaterThan(150); // Slow should be >150ms
