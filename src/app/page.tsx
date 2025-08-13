@@ -1,32 +1,41 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Editors, useSampleText } from "../components/Editors";
-import { Players } from "../components/Players";
+import { BaselineAudioPlayer } from "../components/BaselineAudioPlayer";
+import { SmartSpeedSection } from "../components/SmartSpeedSection";
 import { Card } from "../components/ui/card";
 
 export default function Home() {
-	const sample = useSampleText();
-	const [text, setText] = useState<string>(sample);
+  const sample = useSampleText();
+  const [text, setText] = useState<string>(sample);
 
-	return (
-		<div className="container mx-auto max-w-3xl px-4 py-6">
-			<div className="mb-6">
-				<h1 className="font-semibold text-2xl">Smart Voice Speedup</h1>
-				<p className="text-muted-foreground text-sm">
-					Baseline vs Smart Speed (punctuation-aware)
-				</p>
-			</div>
+  return (
+    <div className="container mx-auto max-w-3xl px-4 py-6">
+      <div className="mb-6">
+        <h1 className="font-semibold text-2xl">Smart Speed Adjustment</h1>
+        <p className="text-muted-foreground text-sm">Baseline vs Smart Speed</p>
+      </div>
 
-			<Card className="mb-6 p-4">
-				<Editors
-					onChange={setText}
-					onUseSample={() => setText(sample)}
-					value={text}
-				/>
-			</Card>
+      {/* Text Input */}
+      <Card className="mb-6 p-4">
+        <Editors
+          onChange={setText}
+          onUseSample={() => setText(sample)}
+          value={text}
+        />
+      </Card>
 
-			<Players text={text} />
-		</div>
-	);
+      {/* Baseline Audio */}
+      <div className="mb-8">
+        <BaselineAudioPlayer text={text} />
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-200 dark:border-gray-800 mb-8 border-1" />
+
+      {/* Smart Speed Section */}
+      <SmartSpeedSection text={text} />
+    </div>
+  );
 }

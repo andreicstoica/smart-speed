@@ -35,7 +35,7 @@ export function Editors(props: EditorsProps) {
             Clear
           </Button>
           <Button onClick={onUseSample} type="button">
-            Load Sample
+            Load Original Sample
           </Button>
         </div>
       </div>

@@ -7,10 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "test": "tsx src/lib/__tests__/tagging.test.ts"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.9.0",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-form": "^1.12.3",
     "@tanstack/react-query": "^5.80.5",
     "class-variance-authority": "^0.7.1",
@@ -28,14 +30,21 @@
     "zod": "^4.0.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.1.2",
     "@tailwindcss/postcss": "^4.1.10",
+    "@tanstack/react-query-devtools": "^5.80.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "jest": "^30.0.5",
     "tailwindcss": "^4.1.10",
+    "ts-jest": "^29.4.1",
     "typescript": "^5",
-    "@tanstack/react-query-devtools": "^5.80.5",
-    "@biomejs/biome": "2.1.2",
     "ultracite": "5.1.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
 }
