@@ -10,7 +10,7 @@ const ttsSchema = z.object({
 	voice_id: z.string().optional(),
 	model_id: z.string().optional(),
 	speed: z.number().min(0.7).max(1.2).optional(),
-	apply_text_normalization: z.enum(['on', 'off']).optional(),
+	apply_text_normalization: z.enum(["on", "off"]).optional(),
 });
 
 export async function GET() {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 			voice_id,
 			model_id,
 			speed,
-			apply_text_normalization
+			apply_text_normalization,
 		} = ttsSchema.parse(body);
 
 		// Use new parameter names if provided, fallback to legacy names
@@ -60,12 +60,15 @@ export async function POST(request: NextRequest) {
 		}
 
 		if (apply_text_normalization !== undefined) {
-			requestConfig.normalizeText = apply_text_normalization === 'on';
+			requestConfig.normalizeText = apply_text_normalization === "on";
 		}
 
 		// Use v3 API with proper error handling
 		try {
-			const audio = await client.textToSpeech.convert(finalVoiceId, requestConfig);
+			const audio = await client.textToSpeech.convert(
+				finalVoiceId,
+				requestConfig
+			);
 			return new NextResponse(audio, {
 				headers: {
 					"Content-Type": "audio/mpeg",
@@ -74,11 +77,17 @@ export async function POST(request: NextRequest) {
 			});
 		} catch (error: any) {
 			// Handle v3 access errors gracefully
-			if (error.statusCode === 403 && error.body?.detail?.status === "model_access_denied") {
-				console.error("ElevenLabs v3 access denied. Please contact sales for early access.");
+			if (
+				error.statusCode === 403 &&
+				error.body?.detail?.status === "model_access_denied"
+			) {
+				console.error(
+					"ElevenLabs v3 access denied. Please contact sales for early access."
+				);
 				return NextResponse.json(
 					{
-						error: "ElevenLabs v3 access required. Please contact sales@elevenlabs.io for early access to use Smart Speed features."
+						error:
+							"ElevenLabs v3 access required. Please contact sales@elevenlabs.io for early access to use Smart Speed features.",
 					},
 					{ status: 403 }
 				);
