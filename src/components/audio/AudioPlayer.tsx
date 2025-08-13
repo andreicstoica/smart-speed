@@ -26,7 +26,6 @@ export function AudioPlayer({
 }: AudioPlayerProps) {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [volume, setVolume] = useState(1);
-  const [previousVolume, setPreviousVolume] = useState(1);
   const volumeRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -49,7 +48,7 @@ export function AudioPlayer({
 
   const handleSpeedToggle = () => {
     const nextIndex = (currentSpeedIndex + 1) % speedOptions.length;
-    const newSpeed = speedOptions[nextIndex];
+    speedOptions[nextIndex];
     toggleSpeed();
   };
 
@@ -57,15 +56,6 @@ export function AudioPlayer({
     setVolume(newVolume);
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
-    }
-  };
-
-  const handleVolumeToggle = () => {
-    if (volume > 0) {
-      setPreviousVolume(volume);
-      handleVolumeChange(0);
-    } else {
-      handleVolumeChange(previousVolume);
     }
   };
 
@@ -97,7 +87,7 @@ export function AudioPlayer({
     <Card className={`p-6 ${className}`}>
       {/* Title and Subtitle */}
       {title && (
-        <div className="text-center mb-6">
+        <div className="text-center">
           <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
             {title}
           </div>
@@ -110,7 +100,7 @@ export function AudioPlayer({
       )}
 
       {/* Main Player Controls */}
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4">
         {/* Play/Pause Button */}
         <Button
           onClick={togglePlay}
@@ -224,8 +214,8 @@ export function AudioPlayer({
           className="p-3 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
           disabled={!audioUrl}
         >
-          <RotateCw className="h-5 w-5" />
           <span className="ml-2 text-sm font-medium">5</span>
+          <RotateCw className="h-5 w-5" />
         </Button>
       </div>
 

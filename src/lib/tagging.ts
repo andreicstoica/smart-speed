@@ -14,6 +14,7 @@ export interface TransformResult {
         speed: number;
         apply_text_normalization: boolean;
         model_id: string;
+        voice_id: string;
     };
 }
 
@@ -137,7 +138,8 @@ export function transformTextForStyle(text: string, style: VoiceStyle): Transfor
     const params = {
         speed: preset.speed,
         apply_text_normalization: preset.apply_text_normalization,
-        model_id: preset.model_id
+        model_id: preset.model_id,
+        voice_id: preset.voice_id
     };
 
     return {

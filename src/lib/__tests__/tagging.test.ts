@@ -3,15 +3,6 @@ import { transformTextForStyle, extractTagsFromText } from '../tagging';
 describe('transformTextForStyle', () => {
     const sampleText = "Hello world, this is a test. How are you doing today? (This is in parentheses). Let's continue with more text.";
 
-    test('neutral style should add minimal tags', () => {
-        const result = transformTextForStyle(sampleText, 'neutral');
-
-        expect(result.params.speed).toBe(1.0);
-        expect(result.params.model_id).toBe('eleven_v3');
-        expect(result.params.apply_text_normalization).toBe(true);
-        expect(result.tagStats.totalTags).toBeGreaterThanOrEqual(0);
-    });
-
     test('bedtime style should have slower speed and gentle tone', () => {
         const result = transformTextForStyle(sampleText, 'bedtime');
 
@@ -32,7 +23,7 @@ describe('transformTextForStyle', () => {
 
     test('should sanitize existing tags', () => {
         const textWithTags = "Hello [existing tag] world <break time=\"100ms\" /> more text.";
-        const result = transformTextForStyle(textWithTags, 'neutral');
+        const result = transformTextForStyle(textWithTags, 'bedtime');
 
         // Should not contain the original tags in a nested way
         expect(result.taggedText).not.toContain('[existing tag]');

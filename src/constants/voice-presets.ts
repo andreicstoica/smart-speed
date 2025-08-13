@@ -1,9 +1,10 @@
-export type VoiceStyle = 'neutral' | 'bedtime' | 'energetic';
+export type VoiceStyle = 'bedtime' | 'energetic';
 
 export interface VoicePreset {
     speed: number;
     apply_text_normalization: boolean;
     model_id: string;
+    voice_id: string;
     tags: {
         opening?: string[];
         breaks: {
@@ -16,22 +17,11 @@ export interface VoicePreset {
 }
 
 export const VOICE_PRESETS: Record<VoiceStyle, VoicePreset> = {
-    neutral: {
-        speed: 1.0,
-        apply_text_normalization: true,
-        model_id: 'eleven_v3',
-        tags: {
-            breaks: {
-                min: 200,
-                max: 250,
-                frequency: 'low'
-            }
-        }
-    },
     bedtime: {
         speed: 0.90,
         apply_text_normalization: true,
         model_id: 'eleven_v3',
+        voice_id: 'GUDYcgRAONiI1nXDcNQQ', // Milo voice
         tags: {
             opening: ['[gentle tone]'],
             breaks: {
@@ -45,6 +35,7 @@ export const VOICE_PRESETS: Record<VoiceStyle, VoicePreset> = {
         speed: 1.12,
         apply_text_normalization: true,
         model_id: 'eleven_v3',
+        voice_id: 'JBFqnCBsd6RMkjVDRZzb', // George voice
         tags: {
             breaks: {
                 min: 150,

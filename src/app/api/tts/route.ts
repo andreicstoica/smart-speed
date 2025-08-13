@@ -31,44 +31,60 @@ export async function POST(request: NextRequest) {
 			apply_text_normalization
 		} = ttsSchema.parse(body);
 
+		// Use new parameter names if provided, fallback to legacy names
+		const finalVoiceId = voice_id || voiceId || "21m00Tcm4TlvDq8ikWAM";
+		const finalModelId = model_id || modelId || "eleven_multilingual_v3";
+
+		// Initialize ElevenLabs v3 client
 		const client = new ElevenLabsClient({
 			apiKey: process.env.ELEVENLABS_API_KEY!,
 		});
 
-		// Use new parameter names if provided, fallback to legacy names
-		const finalVoiceId = voice_id || voiceId || "21m00Tcm4TlvDq8ikWAM";
-		const finalModelId = model_id || modelId || "eleven_monolingual_v1";
-
-		// Build the request config
+		// Build the request config for v3 API
 		const requestConfig: any = {
 			text,
 			modelId: finalModelId,
 			voiceSettings: {
 				stability: 0.5,
 				similarityBoost: 0.5,
+				style: 0.0, // Default style setting for v3
+				useSpeakerBoost: true, // Enable speaker boost for better quality
 			},
 		};
 
 		// Add smart speed parameters if provided
 		if (speed !== undefined) {
-			// ElevenLabs expects speed as a percentage (0.5 = 50%, 1.0 = 100%)
+			// For v3, speed is controlled via audio tags in the text
+			// The speed parameter from Smart Speed will be handled by the tagging system
 			requestConfig.outputFormat = "mp3_44100_128";
-			// Note: ElevenLabs doesn't directly support speed parameter in v3
-			// Speed is handled via voice settings or model capabilities
 		}
 
 		if (apply_text_normalization !== undefined) {
 			requestConfig.normalizeText = apply_text_normalization === 'on';
 		}
 
-		const audio = await client.textToSpeech.convert(finalVoiceId, requestConfig);
-
-		return new NextResponse(audio, {
-			headers: {
-				"Content-Type": "audio/mpeg",
-				"Cache-Control": "public, max-age=3600",
-			},
-		});
+		// Use v3 API with proper error handling
+		try {
+			const audio = await client.textToSpeech.convert(finalVoiceId, requestConfig);
+			return new NextResponse(audio, {
+				headers: {
+					"Content-Type": "audio/mpeg",
+					"Cache-Control": "public, max-age=3600",
+				},
+			});
+		} catch (error: any) {
+			// Handle v3 access errors gracefully
+			if (error.statusCode === 403 && error.body?.detail?.status === "model_access_denied") {
+				console.error("ElevenLabs v3 access denied. Please contact sales for early access.");
+				return NextResponse.json(
+					{
+						error: "ElevenLabs v3 access required. Please contact sales@elevenlabs.io for early access to use Smart Speed features."
+					},
+					{ status: 403 }
+				);
+			}
+			throw error;
+		}
 	} catch (error) {
 		if (error instanceof z.ZodError) {
 			return NextResponse.json(

@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-6">
       <div className="mb-6">
-        <h1 className="font-semibold text-2xl">Smart Voice Speedup</h1>
+        <h1 className="font-semibold text-2xl">Smart Speed Adjustment</h1>
         <p className="text-muted-foreground text-sm">Baseline vs Smart Speed</p>
       </div>
 

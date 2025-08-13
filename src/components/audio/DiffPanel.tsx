@@ -22,20 +22,18 @@ export function DiffPanel({
           Text Transformation Preview
         </h3>
         <div className="text-sm text-muted-foreground mb-4">
-          Showing how your text will be processed with the selected style
+          How the text will be processed
         </div>
       </div>
 
       <Card className="p-4">
-        <div className="mb-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <h4 className="font-medium text-sm text-muted-foreground">
-              Original Text
-            </h4>
-            <h4 className="font-medium text-sm text-muted-foreground">
-              Enhanced Text
-            </h4>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <h4 className="font-medium text-sm text-muted-foreground">
+            Original Text
+          </h4>
+          <h4 className="font-medium text-sm text-muted-foreground">
+            Enhanced Text
+          </h4>
         </div>
 
         <div className="max-h-64 overflow-y-auto">

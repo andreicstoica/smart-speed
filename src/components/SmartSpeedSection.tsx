@@ -5,6 +5,12 @@ import { DiffPanel } from "./audio/DiffPanel";
 import { AudioPlayer } from "./audio/AudioPlayer";
 import { useSmartSpeed } from "./audio/useSmartSpeed";
 import type { VoiceStyle } from "@/constants/voice-presets";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface SmartSpeedSectionProps {
   text: string;
@@ -30,7 +36,7 @@ export function SmartSpeedSection({ text }: SmartSpeedSectionProps) {
     <div className="space-y-6">
       {/* Style Selection */}
       <Card className="p-6">
-        <div className="mb-6">
+        <div>
           <h3 className="text-lg font-semibold mb-2">Voice Style Selection</h3>
           <p className="text-sm text-muted-foreground">
             Choose a style to enhance your audio with smart timing and
@@ -38,7 +44,7 @@ export function SmartSpeedSection({ text }: SmartSpeedSectionProps) {
           </p>
         </div>
 
-        <div className="flex gap-3 mb-6">
+        <div className="flex gap-3">
           <Button
             variant={selectedStyle === "bedtime" ? "default" : "outline"}
             onClick={() => handleStyleSelect("bedtime")}
@@ -142,21 +148,36 @@ export function SmartSpeedSection({ text }: SmartSpeedSectionProps) {
         {/* Generate Button or Player */}
         {!smartSpeed.smartAudioUrl ? (
           <div className="flex justify-center">
-            <Button
-              onClick={handleGenerateAudio}
-              disabled={!hasText || smartSpeed.loading}
-              size="lg"
-              className="px-8"
-            >
-              {smartSpeed.loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Generating...
-                </div>
-              ) : (
-                "Generate New Audio"
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      onClick={handleGenerateAudio}
+                      disabled={
+                        !hasText || !selectedStyle || smartSpeed.loading
+                      }
+                      size="lg"
+                      className="px-8"
+                    >
+                      {smartSpeed.loading ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Generating...
+                        </div>
+                      ) : (
+                        "Generate New Audio"
+                      )}
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!selectedStyle && (
+                  <TooltipContent>
+                    <p>Please select a voice style first</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
         ) : (
           smartSpeed.smartAudioUrl && (

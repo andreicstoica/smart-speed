@@ -24,13 +24,13 @@ export interface SmartSpeedHookReturn {
     reset: () => void;
 
     // Current config
-    selectedStyle: VoiceStyle;
+    selectedStyle: VoiceStyle | null;
 }
 
 // TTS API call function
 async function fetchSmartTts(
     taggedText: string,
-    params: { speed: number; apply_text_normalization: boolean; model_id: string },
+    params: { speed: number; apply_text_normalization: boolean; model_id: string; voice_id: string },
     voiceId?: string
 ): Promise<ArrayBuffer> {
     const res = await fetch('/api/tts', {
@@ -38,7 +38,7 @@ async function fetchSmartTts(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             text: taggedText,
-            voice_id: voiceId,
+            voice_id: params.voice_id || voiceId,
             model_id: params.model_id,
             speed: params.speed,
             apply_text_normalization: params.apply_text_normalization ? 'on' : 'off'
@@ -61,7 +61,7 @@ function createAudioUrl(buffer: ArrayBuffer): string {
 
 export function useSmartSpeed(text: string, voiceId?: string): SmartSpeedHookReturn {
     const [state, setState] = useState<SmartSpeedState>('IDLE');
-    const [selectedStyle, setSelectedStyle] = useState<VoiceStyle>('neutral');
+    const [selectedStyle, setSelectedStyle] = useState<VoiceStyle | null>(null);
     const [transformResult, setTransformResult] = useState<TransformResult | null>(null);
     const [smartAudioUrl, setSmartAudioUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -105,10 +105,7 @@ export function useSmartSpeed(text: string, voiceId?: string): SmartSpeedHookRet
         if (text.trim()) {
             const result = transformTextForStyle(text, style);
             setTransformResult(result);
-            setState('PROCESSING');
-
-            // Auto-generate smart audio
-            generateSmartAudioInternal(result, style);
+            setState('IDLE'); // Don't auto-generate, wait for user to click button
         }
     }, [text]);
 
@@ -162,7 +159,7 @@ export function useSmartSpeed(text: string, voiceId?: string): SmartSpeedHookRet
     }, [text, voiceId, smartAudioUrl]);
 
     const generateSmartAudio = useCallback(async () => {
-        if (!transformResult) return;
+        if (!transformResult || !selectedStyle) return;
         await generateSmartAudioInternal(transformResult, selectedStyle);
     }, [transformResult, selectedStyle, generateSmartAudioInternal]);
 
@@ -173,7 +170,7 @@ export function useSmartSpeed(text: string, voiceId?: string): SmartSpeedHookRet
         }
 
         setState('IDLE');
-        setSelectedStyle('neutral');
+        setSelectedStyle(null);
         setTransformResult(null);
         setError(null);
         setLoading(false);
