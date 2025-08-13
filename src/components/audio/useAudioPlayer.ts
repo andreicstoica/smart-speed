@@ -8,7 +8,7 @@ export function useAudioPlayer(audioUrl?: string) {
     const [isSeeking, setIsSeeking] = useState(false);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
-    const speedOptions = [1, 1.5, 2, 3];
+    const speedOptions = [0.75, 1, 1.5, 2, 3];
 
     // Reset when new audio loads
     useEffect(() => {
