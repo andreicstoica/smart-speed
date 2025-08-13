@@ -1,6 +1,6 @@
 # smart-speed
 
-Smart Voice Speedup is a simple demo that turns any article into audio you can compare in two ways: a standard “baseline” text-to-speech and a “smart speed” version. The smart version automatically varies tempo based on punctuation and context, so sentences sound more natural than a flat 1.5× or 2× playback. It can also apply subtle pitch and tone changes, such as a slower, softer “bedtime” style to help listeners fall asleep. The goal is to make speed-adjusted listening clearer, smoother, and more enjoyable.
+Smart Speed is a simple demo that turns any article into audio you can compare in two ways: a standard “baseline” text-to-speech and a “smart speed” version. The smart version automatically varies tempo based on punctuation and context, so sentences sound more natural than a flat .5×, 1.5×, or 2× playback. It can also apply subtle pitch and tone changes, such as a slower, softer “bedtime” style to help listeners fall asleep. The goal is to make speed-adjusted listening clearer, smoother, and more enjoyable.
 
 # stack info
 
