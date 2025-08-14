@@ -9,7 +9,7 @@
     "lint": "next lint",
     "check": "biome check --write .",
     "test": "tsx src/lib/__tests__/tagging.test.ts",
-    "vercel-build": "npm install --legacy-peer-deps && next build"
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.9.0",
