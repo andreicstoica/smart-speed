@@ -4,16 +4,32 @@ import { useState } from "react";
 import { BaselineAudioPlayer } from "@/components/audio/BaselineAudioPlayer";
 import { Editors } from "@/components/Editors";
 import { SmartSpeedSection } from "@/components/SmartSpeedSection";
+import { ModelDetailsSection } from "@/components/ModelDetailsSection";
 import { IntroModal } from "@/components/IntroModal";
 import { useSampleText } from "@/lib/utils";
+import { useSmartSpeed } from "@/hooks/useSmartSpeed";
+import { useManualSpeedAdjustment } from "@/hooks/useManualSpeedAdjustment";
 import { Card } from "../components/ui/card";
+
+type ModelVersion = "v2" | "v3";
 
 export default function Home() {
   const sample = useSampleText();
   const [text, setText] = useState<string>(sample);
+  const [modelVersion, setModelVersion] = useState<ModelVersion>("v2");
+
+  // Initialize both hooks to get their transform results
+  const smartSpeed = useSmartSpeed(text);
+  const manualSpeed = useManualSpeedAdjustment(text);
+
+  // Get the appropriate transform result based on model version
+  const transformResult =
+    modelVersion === "v2"
+      ? manualSpeed.transformResult
+      : smartSpeed.transformResult;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-6">
+    <div className="container mx-auto max-w-6xl px-4 py-6">
       <IntroModal />
 
       <div className="mb-6">
@@ -30,16 +46,36 @@ export default function Home() {
         />
       </Card>
 
-      {/* Baseline Audio */}
-      <div className="mb-8">
-        <BaselineAudioPlayer text={text} />
+      {/* Model Details Section */}
+      <ModelDetailsSection
+        modelVersion={modelVersion}
+        setModelVersion={setModelVersion}
+        transformResult={transformResult}
+        text={text}
+      />
+
+      {/* Audio Players Side by Side */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Baseline Audio */}
+        <div>
+          <BaselineAudioPlayer text={text} />
+        </div>
+
+        {/* Smart Speed Audio */}
+        <Card className="p-6">
+          <div className="mb-4 text-center">
+            <div className="font-medium text-lg">Smart Speed Audio</div>
+            <div className="text-muted-foreground text-sm">
+              Enhanced with timing and expression tags
+            </div>
+          </div>
+          <SmartSpeedSection
+            text={text}
+            modelVersion={modelVersion}
+            setModelVersion={setModelVersion}
+          />
+        </Card>
       </div>
-
-      {/* Divider */}
-      <div className="mb-8 border-1 border-gray-200 border-t dark:border-gray-800" />
-
-      {/* Smart Speed Section */}
-      <SmartSpeedSection text={text} />
     </div>
   );
 }
