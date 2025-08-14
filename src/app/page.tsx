@@ -7,26 +7,15 @@ import { SmartSpeedSection } from "@/components/SmartSpeedSection";
 import { ModelDetailsSection } from "@/components/ModelDetailsSection";
 import { IntroModal } from "@/components/IntroModal";
 import { useSampleText } from "@/lib/utils";
-import { useSmartSpeed } from "@/hooks/useSmartSpeed";
 import { useManualSpeedAdjustment } from "@/hooks/useManualSpeedAdjustment";
 import { Card } from "../components/ui/card";
-
-type ModelVersion = "v2" | "v3";
 
 export default function Home() {
   const sample = useSampleText();
   const [text, setText] = useState<string>(sample);
-  const [modelVersion, setModelVersion] = useState<ModelVersion>("v2");
 
-  // Initialize both hooks to get their transform results
-  const smartSpeed = useSmartSpeed(text);
+  // Initialize manual speed adjustment hook
   const manualSpeed = useManualSpeedAdjustment(text);
-
-  // Get the appropriate transform result based on model version
-  const transformResult =
-    modelVersion === "v2"
-      ? manualSpeed.transformResult
-      : smartSpeed.transformResult;
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-6">
@@ -50,9 +39,7 @@ export default function Home() {
 
       {/* Model Details Section */}
       <ModelDetailsSection
-        modelVersion={modelVersion}
-        setModelVersion={setModelVersion}
-        transformResult={transformResult}
+        transformResult={manualSpeed.transformResult}
         text={text}
         manualSpeed={manualSpeed}
       />
@@ -61,23 +48,11 @@ export default function Home() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Baseline Audio */}
         <div>
-          <BaselineAudioPlayer
-            text={text}
-            playbackRate={
-              modelVersion === "v3"
-                ? smartSpeed.transformResult?.params.speed
-                : manualSpeed.speed
-            }
-          />
+          <BaselineAudioPlayer text={text} playbackRate={manualSpeed.speed} />
         </div>
 
         {/* Smart Speed Audio */}
-        <SmartSpeedSection
-          text={text}
-          modelVersion={modelVersion}
-          setModelVersion={setModelVersion}
-          manual={manualSpeed}
-        />
+        <SmartSpeedSection text={text} manual={manualSpeed} />
       </div>
     </div>
   );

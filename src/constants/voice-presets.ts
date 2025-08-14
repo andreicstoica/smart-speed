@@ -46,37 +46,6 @@ export const V2_PRESETS = {
 	},
 };
 
-export const VOICE_PRESETS: Record<VoiceStyle, VoicePreset> = {
-	bedtime: {
-		speed: 0.9,
-		apply_text_normalization: true,
-		model_id: "eleven_multilingual_v3",
-		voice_id: "GUDYcgRAONiI1nXDcNQQ", // Milo voice
-		tags: {
-			opening: ["[gentle tone]"],
-			breaks: {
-				min: 250,
-				max: 300,
-				frequency: "medium",
-			},
-		},
-	},
-	energetic: {
-		speed: 1.12,
-		apply_text_normalization: true,
-		model_id: "eleven_multilingual_v3",
-		voice_id: "JBFqnCBsd6RMkjVDRZzb", // George voice
-		tags: {
-			breaks: {
-				min: 150,
-				max: 200,
-				frequency: "low",
-			},
-			emphasis: ["[rushed]"],
-		},
-	},
-};
-
 export function getPresetForStyle(style: VoiceStyle): VoicePreset {
-	return VOICE_PRESETS[style];
+	return V2_PRESETS[style];
 }

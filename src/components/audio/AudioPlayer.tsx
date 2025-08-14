@@ -225,7 +225,7 @@ export function AudioPlayer({
               size="sm"
               variant="ghost"
             >
-              {playbackSpeed}x
+              {playbackSpeed.toFixed(2)}x
             </Button>
           )}
 

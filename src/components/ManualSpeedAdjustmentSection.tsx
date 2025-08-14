@@ -6,21 +6,12 @@ import { Button } from "./ui/button";
 import type { ManualHookReturn } from "@/hooks/useManualSpeedAdjustment";
 import { SAMPLE_TEXT } from "@/constants/sample";
 
-type ModelVersion = "v2" | "v3";
-
 interface Props {
   text: string;
-  modelVersion: ModelVersion;
-  setModelVersion: (version: ModelVersion) => void;
   manual: ManualHookReturn;
 }
 
-export function ManualSpeedAdjustmentSection({
-  text,
-  modelVersion,
-  setModelVersion,
-  manual,
-}: Props) {
+export function ManualSpeedAdjustmentSection({ text, manual }: Props) {
   const hasText = useMemo(() => text.trim().length > 0, [text]);
 
   // Preloaded audio URL for the 2x sped up example

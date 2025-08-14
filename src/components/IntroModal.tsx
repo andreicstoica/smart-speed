@@ -58,9 +58,7 @@ export function IntroModal() {
             </div>
 
             <div className="border-t pt-4">
-              <h3 className="mb-1 font-semibold text-base">
-                How my smart speed works
-              </h3>
+              <h3 className="mb-1 font-semibold text-base">How it works</h3>
               <p className="whitespace-pre-wrap text-sm leading-relaxed">
                 {INTRO_IMPROVEMENTS}
               </p>

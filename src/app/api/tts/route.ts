@@ -64,41 +64,31 @@ export async function POST(request: NextRequest) {
 		}
 
 		// Use v3 API with proper error handling
-		try {
-			const audio = await client.textToSpeech.convert(
-				finalVoiceId,
-				requestConfig
-			);
-			return new NextResponse(audio, {
-				headers: {
-					"Content-Type": "audio/mpeg",
-					"Cache-Control": "public, max-age=3600",
-				},
-			});
-		} catch (error: any) {
-			// Handle v3 access errors gracefully
-			if (
-				error.statusCode === 403 &&
-				error.body?.detail?.status === "model_access_denied"
-			) {
-				console.error(
-					"ElevenLabs v3 access denied. Please contact sales for early access."
-				);
-				return NextResponse.json(
-					{
-						error:
-							"ElevenLabs v3 access required. Please contact sales@elevenlabs.io for early access to use Smart Speed features.",
-					},
-					{ status: 403 }
-				);
-			}
-			throw error;
-		}
-	} catch (error) {
+		const audio = await client.textToSpeech.convert(
+			finalVoiceId,
+			requestConfig
+		);
+		return new NextResponse(audio, {
+			headers: {
+				"Content-Type": "audio/mpeg",
+				"Cache-Control": "public, max-age=3600",
+			},
+		});
+	} catch (error: any) {
 		if (error instanceof z.ZodError) {
 			return NextResponse.json(
 				{ error: "Invalid request data" },
 				{ status: 400 }
+			);
+		}
+
+		// Handle ElevenLabs API errors
+		if (error.statusCode === 403) {
+			return NextResponse.json(
+				{
+					error: error.body?.detail?.message || error.message || "ElevenLabs access denied",
+				},
+				{ status: 403 }
 			);
 		}
 
