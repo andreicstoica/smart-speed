@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 		} = ttsSchema.parse(body);
 
 		// Use new parameter names if provided, fallback to legacy names
-		const finalVoiceId = voice_id || voiceId || "21m00Tcm4TlvDq8ikWAM";
+		const finalVoiceId = voice_id || voiceId || "GUDYcgRAONiI1nXDcNQQ"; // Changed from "21m00Tcm4TlvDq8ikWAM"
 		const finalModelId = model_id || modelId || "eleven_multilingual_v3";
 
 		// Initialize ElevenLabs v3 client

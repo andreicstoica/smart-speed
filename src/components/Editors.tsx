@@ -30,7 +30,7 @@ export function Editors(props: EditorsProps) {
           >
             Clear
           </Button>
-          <Button onClick={onUseSample} type="button">
+          <Button onClick={onUseSample} type="button" variant="secondary">
             Load Original Sample
           </Button>
         </div>

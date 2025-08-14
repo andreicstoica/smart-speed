@@ -35,12 +35,12 @@ export function ManualSpeedAdjustmentSection({
         audioUrl={speedMatchesPreloaded ? preloadedAudioUrl : undefined}
         subtitle={
           speedMatchesPreloaded
-            ? "Preloaded 2x speed example audio"
-            : `Speed changed from 2x - generate new audio for ${manual.speed.toFixed(
-                2
-              )}x`
+            ? "Preloaded 2x audio using v2 model"
+            : modelVersion === "v3"
+            ? "generate new audio for v3 model"
+            : `generate new audio for ${manual.speed.toFixed(2)}x`
         }
-        title="Smart Speed Example Audio"
+        title="Smart Speed Generated Audio"
         initialRate={2}
         lockRate
         hideSkipButtons

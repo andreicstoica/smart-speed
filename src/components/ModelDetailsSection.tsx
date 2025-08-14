@@ -38,7 +38,7 @@ export function ModelDetailsSection({
     <div className="space-y-6">
       <Card className="mb-6 p-4">
         <div className="mb-4">
-          <h3 className="mb-2 font-semibold text-lg">Peek under the hood</h3>
+          <h3 className="mb-2 font-semibold text-lg">Speed up the audio</h3>
           <p className="text-muted-foreground text-sm">
             Select model version and see other parameters
           </p>
@@ -117,42 +117,6 @@ export function ModelDetailsSection({
                 Enter some text to enable style selection
               </div>
             )}
-          </div>
-        )}
-
-        {transformResult && (
-          <div className="grid grid-cols-2 gap-4 text-sm lg:grid-cols-4">
-            <div>
-              <div className="font-medium text-muted-foreground">Speed</div>
-              <div className="font-semibold text-lg">
-                {transformResult.params.speed}x
-              </div>
-            </div>
-
-            <div>
-              <div className="font-medium text-muted-foreground">Model</div>
-              <div className="font-semibold text-lg">
-                {transformResult.params.model_id}
-              </div>
-            </div>
-
-            <div>
-              <div className="font-medium text-muted-foreground">
-                Breaks Added
-              </div>
-              <div className="font-semibold text-blue-600 text-lg dark:text-blue-400">
-                {transformResult.tagStats.breaks}
-              </div>
-            </div>
-
-            <div>
-              <div className="font-medium text-muted-foreground">
-                Style Tags
-              </div>
-              <div className="font-semibold text-lg text-purple-600 dark:text-purple-400">
-                {transformResult.tagStats.styleTags}
-              </div>
-            </div>
           </div>
         )}
       </Card>

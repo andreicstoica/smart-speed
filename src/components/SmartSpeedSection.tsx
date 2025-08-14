@@ -52,65 +52,60 @@ export function SmartSpeedSection({
 
   const hasText = text.trim().length > 0;
 
+  // Check if the generated smart speed matches the preloaded audio (2x)
+  const speedMatchesPreloaded =
+    smartSpeed.transformResult?.params.speed === 2.0;
+
   return (
     <>
-      {/* Preloaded Audio Player */}
+      {/* Smart Speed Example Audio - show player or generate button */}
       <AudioPlayer
-        audioUrl={preloadedAudioUrl}
-        subtitle="Preloaded 2x speed example audio"
+        audioUrl={speedMatchesPreloaded ? preloadedAudioUrl : undefined}
+        subtitle={
+          speedMatchesPreloaded
+            ? "Preloaded 2x speed example audio"
+            : `Speed changed from 2x - generate new audio for ${
+                smartSpeed.transformResult?.params.speed?.toFixed(2) || "auto"
+              }x`
+        }
         title="Smart Speed Example Audio"
         initialRate={2}
         lockRate
         hideSkipButtons
+        disabled={!speedMatchesPreloaded}
+        overlayContent={
+          !speedMatchesPreloaded ? (
+            <Button
+              className="px-8"
+              disabled={!hasText || smartSpeed.loading}
+              onClick={handleGenerateAudio}
+              size="lg"
+              variant="outline"
+            >
+              {smartSpeed.loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent dark:border-white" />
+                  Generating...
+                </div>
+              ) : (
+                "Generate New Audio"
+              )}
+            </Button>
+          ) : undefined
+        }
       />
 
-      {/* Generate Button for new audio (optional) */}
       {smartSpeed.smartAudioUrl ? (
-        <div className="mt-4">
-          <AudioPlayer
-            audioUrl={smartSpeed.smartAudioUrl}
-            subtitle="Enhanced with timing and expression tags"
-            title="Smart Speed Generated Audio"
-            initialRate={smartSpeed.transformResult?.params.speed}
-            lockRate
-            hideSkipButtons
-          />
-        </div>
-      ) : (
-        <div className="mt-4 flex justify-center">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div>
-                  <Button
-                    className="px-8"
-                    disabled={!hasText || smartSpeed.loading}
-                    onClick={handleGenerateAudio}
-                    size="lg"
-                    variant="outline"
-                  >
-                    {smartSpeed.loading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Generating...
-                      </div>
-                    ) : (
-                      "Generate New Audio"
-                    )}
-                  </Button>
-                </div>
-              </TooltipTrigger>
-              {!hasText && (
-                <TooltipContent>
-                  <p>Please enter some text first</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      )}
+        <AudioPlayer
+          audioUrl={smartSpeed.smartAudioUrl}
+          title="Smart Speed Generated Audio"
+          subtitle="Enhanced with timing and expression tags"
+          initialRate={smartSpeed.transformResult?.params.speed}
+          lockRate
+          hideSkipButtons
+        />
+      ) : null}
 
-      {/* Error Display */}
       {smartSpeed.error && (
         <div className="mt-4 rounded-lg bg-red-50 p-3 dark:bg-red-900/20">
           <div className="font-medium text-red-700 text-sm dark:text-red-300">

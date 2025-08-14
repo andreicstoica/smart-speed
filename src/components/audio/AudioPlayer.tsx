@@ -5,6 +5,7 @@ import {
   RotateCw,
   Volume2,
   VolumeX,
+  Download,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -218,6 +219,25 @@ export function AudioPlayer({
               variant="ghost"
             >
               {playbackSpeed}x
+            </Button>
+          )}
+
+          {/* Download Button */}
+          {audioUrl && (
+            <Button
+              className="p-3 text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = audioUrl;
+                link.download = `${title || "audio"}.mp3`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+              size="sm"
+              variant="ghost"
+            >
+              <Download className="h-5 w-5" />
             </Button>
           )}
 

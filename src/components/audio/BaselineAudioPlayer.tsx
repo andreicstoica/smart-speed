@@ -1,7 +1,6 @@
 import { AudioPlayer } from "./AudioPlayer";
 import { useTts } from "@/hooks/useTts";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 
 interface BaselineAudioPlayerProps {
   text: string;
@@ -28,6 +27,7 @@ export function BaselineAudioPlayer({
           }
           title="Baseline Generated Audio"
           initialRate={playbackRate}
+          hideSkipButtons
         />
       ) : (
         <div className="flex justify-center">

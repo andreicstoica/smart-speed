@@ -34,10 +34,12 @@ export default function Home() {
 
       {/* Text Input */}
       <Card className="mb-6 p-4">
-        <div className="font-semibold text-lg">Paste some text</div>
-        <div className="text-muted-foreground text-sm">
-          Use less than ≤ 1k chars to keep it speedy, I also only have $5 of
-          credits :D
+        <div className="mb-2">
+          <div className="font-semibold text-lg">Paste some text</div>
+          <div className="text-muted-foreground text-sm">
+            I don't have a lot of credits left, so please use small sample texts
+            :)
+          </div>
         </div>
         <Editors
           onChange={setText}
