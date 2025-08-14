@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { VoiceStyle } from "@/constants/voice-presets";
 import { AudioPlayer } from "./audio/AudioPlayer";
 import { useSmartSpeed } from "@/hooks/useSmartSpeed";
 import { Button } from "./ui/button";
+import { SAMPLE_TEXT } from "@/constants/sample";
 import {
   Tooltip,
   TooltipContent,
@@ -46,35 +47,50 @@ export function SmartSpeedSection({
     );
   }
 
+  // Auto-select energetic style for V3 mode (gives us 2x speed)
+  useEffect(() => {
+    if (modelVersion === "v3" && !smartSpeed.selectedStyle && text.trim()) {
+      smartSpeed.selectStyle("energetic");
+    }
+  }, [modelVersion, smartSpeed.selectedStyle, text, smartSpeed]);
+
   const handleGenerateAudio = () => {
     smartSpeed.generateSmartAudio();
   };
 
   const hasText = text.trim().length > 0;
 
-  // Check if the generated smart speed matches the preloaded audio (2x)
-  const speedMatchesPreloaded =
-    smartSpeed.transformResult?.params.speed === 2.0;
+  // Check if we can use preloaded audio: must be sample text AND 2x speed
+  const canUsePreloadedAudio =
+    text === SAMPLE_TEXT && smartSpeed.transformResult?.params.speed === 2.0;
+
+  // Determine which audio to show and its properties
+  const currentAudioUrl =
+    smartSpeed.smartAudioUrl ||
+    (canUsePreloadedAudio ? preloadedAudioUrl : undefined);
+  const currentSubtitle = smartSpeed.smartAudioUrl
+    ? "Enhanced with timing and expression tags"
+    : canUsePreloadedAudio
+    ? "Preloaded 2x speed example audio"
+    : `Generate new audio for ${
+        smartSpeed.transformResult?.params.speed?.toFixed(2) || "auto"
+      }x`;
+  const currentInitialRate = smartSpeed.smartAudioUrl
+    ? smartSpeed.transformResult?.params.speed
+    : 2;
 
   return (
     <>
-      {/* Smart Speed Example Audio - show player or generate button */}
       <AudioPlayer
-        audioUrl={speedMatchesPreloaded ? preloadedAudioUrl : undefined}
-        subtitle={
-          speedMatchesPreloaded
-            ? "Preloaded 2x speed example audio"
-            : `Speed changed from 2x - generate new audio for ${
-                smartSpeed.transformResult?.params.speed?.toFixed(2) || "auto"
-              }x`
-        }
-        title="Smart Speed Example Audio"
-        initialRate={2}
+        audioUrl={currentAudioUrl}
+        subtitle={currentSubtitle}
+        title="Smart Speed Generated Audio"
+        initialRate={currentInitialRate}
         lockRate
         hideSkipButtons
-        disabled={!speedMatchesPreloaded}
+        disabled={!currentAudioUrl}
         overlayContent={
-          !speedMatchesPreloaded ? (
+          !currentAudioUrl ? (
             <Button
               className="px-8"
               disabled={!hasText || smartSpeed.loading}
@@ -94,17 +110,6 @@ export function SmartSpeedSection({
           ) : undefined
         }
       />
-
-      {smartSpeed.smartAudioUrl ? (
-        <AudioPlayer
-          audioUrl={smartSpeed.smartAudioUrl}
-          title="Smart Speed Generated Audio"
-          subtitle="Enhanced with timing and expression tags"
-          initialRate={smartSpeed.transformResult?.params.speed}
-          lockRate
-          hideSkipButtons
-        />
-      ) : null}
 
       {smartSpeed.error && (
         <div className="mt-4 rounded-lg bg-red-50 p-3 dark:bg-red-900/20">

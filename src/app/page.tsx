@@ -61,7 +61,14 @@ export default function Home() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Baseline Audio */}
         <div>
-          <BaselineAudioPlayer text={text} playbackRate={manualSpeed.speed} />
+          <BaselineAudioPlayer
+            text={text}
+            playbackRate={
+              modelVersion === "v3"
+                ? smartSpeed.transformResult?.params.speed
+                : manualSpeed.speed
+            }
+          />
         </div>
 
         {/* Smart Speed Audio */}

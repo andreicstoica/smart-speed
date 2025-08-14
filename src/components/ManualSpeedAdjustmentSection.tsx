@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { AudioPlayer } from "./audio/AudioPlayer";
 import { Button } from "./ui/button";
 import type { ManualHookReturn } from "@/hooks/useManualSpeedAdjustment";
+import { SAMPLE_TEXT } from "@/constants/sample";
 
 type ModelVersion = "v2" | "v3";
 
@@ -25,28 +26,34 @@ export function ManualSpeedAdjustmentSection({
   // Preloaded audio URL for the 2x sped up example
   const preloadedAudioUrl = "/audio/smart-audio-example-2x.mp3";
 
-  // Check if speed matches the preloaded audio (2x)
-  const speedMatchesPreloaded = manual.speed === 2.0;
+  // Check if we can use preloaded audio: must be sample text AND 2x speed
+  const canUsePreloadedAudio = text === SAMPLE_TEXT && manual.speed === 2.0;
+
+  // Determine which audio to show and its properties
+  const currentAudioUrl =
+    manual.smartAudioUrl ||
+    (canUsePreloadedAudio ? preloadedAudioUrl : undefined);
+  const currentSubtitle = manual.smartAudioUrl
+    ? "Enhanced with timing and expression tags"
+    : canUsePreloadedAudio
+    ? "Preloaded 2x audio using v2 model"
+    : `generate new audio for ${manual.speed.toFixed(2)}x`;
+  const currentInitialRate = manual.smartAudioUrl
+    ? manual.transformResult?.params.speed
+    : 2;
 
   return (
     <>
-      {/* Smart Speed Example Audio - show player or generate button */}
       <AudioPlayer
-        audioUrl={speedMatchesPreloaded ? preloadedAudioUrl : undefined}
-        subtitle={
-          speedMatchesPreloaded
-            ? "Preloaded 2x audio using v2 model"
-            : modelVersion === "v3"
-            ? "generate new audio for v3 model"
-            : `generate new audio for ${manual.speed.toFixed(2)}x`
-        }
+        audioUrl={currentAudioUrl}
+        subtitle={currentSubtitle}
         title="Smart Speed Generated Audio"
-        initialRate={2}
+        initialRate={currentInitialRate}
         lockRate
         hideSkipButtons
-        disabled={!speedMatchesPreloaded}
+        disabled={!currentAudioUrl}
         overlayContent={
-          !speedMatchesPreloaded ? (
+          !currentAudioUrl ? (
             <Button
               className="px-8"
               disabled={!hasText || manual.loading}
@@ -66,17 +73,6 @@ export function ManualSpeedAdjustmentSection({
           ) : undefined
         }
       />
-
-      {manual.smartAudioUrl ? (
-        <AudioPlayer
-          audioUrl={manual.smartAudioUrl}
-          title="Smart Speed Generated Audio"
-          subtitle="Enhanced with timing and expression tags"
-          initialRate={manual.transformResult?.params.speed}
-          lockRate
-          hideSkipButtons
-        />
-      ) : null}
 
       {manual.error && (
         <div className="mt-4 rounded-lg bg-red-50 p-3 dark:bg-red-900/20">

@@ -1,5 +1,5 @@
 import { extractTagsFromText, transformTextForStyle } from "../tagging";
-import { V1_PRESETS } from "../../constants/voice-presets";
+import { V2_PRESETS } from "../../constants/voice-presets";
 
 // Helper function to simulate manual speed adjustment logic
 function simulateManualSpeedTransform(text: string, speed: number) {

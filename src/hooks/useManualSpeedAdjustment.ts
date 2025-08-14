@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { TransformResult } from "@/lib/tagging";
 import { V2_PRESETS } from "@/constants/voice-presets";
+import { SAMPLE_TEXT } from "@/constants/sample";
 
 export type ManualState = "IDLE" | "PROCESSING" | "READY" | "ERROR";
 
@@ -81,6 +82,14 @@ export function useManualSpeedAdjustment(text: string): ManualHookReturn {
             setTransformResult(null);
             setState("IDLE");
             return;
+        }
+
+        // Reset generated audio when text changes (except for sample text)
+        if (smartAudioUrl && text !== SAMPLE_TEXT) {
+            URL.revokeObjectURL(smartAudioUrl);
+            setSmartAudioUrl(null);
+            setState("IDLE");
+            setError(null);
         }
 
         // Use V2 presets for manual mode (voice only)

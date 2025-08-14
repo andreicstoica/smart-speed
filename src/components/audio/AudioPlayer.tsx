@@ -17,6 +17,7 @@ interface AudioPlayerProps {
   audioUrl?: string;
   title?: string;
   subtitle?: string;
+  description?: string;
   className?: string;
   // Playback rate control
   initialRate?: number; // if provided, set audio.playbackRate
@@ -31,6 +32,7 @@ export function AudioPlayer({
   audioUrl,
   title,
   subtitle,
+  description,
   className,
   initialRate,
   lockRate,
@@ -106,6 +108,11 @@ export function AudioPlayer({
           {subtitle && (
             <div className="text-gray-500 text-sm dark:text-gray-400">
               {subtitle}
+            </div>
+          )}
+          {description && (
+            <div className="text-gray-500 text-sm dark:text-gray-400 mt-1">
+              {description}
             </div>
           )}
         </div>

@@ -15,39 +15,39 @@ export function BaselineAudioPlayer({
   const hasText = text.trim().length > 0;
 
   return (
-    <>
-      {/* Generate Button or Player */}
-      {audioUrl ? (
-        <AudioPlayer
-          audioUrl={audioUrl}
-          subtitle={
-            isUsingSampleText
-              ? "Using sample audio"
-              : "Standard text-to-speech without enhancements"
-          }
-          title="Baseline Generated Audio"
-          initialRate={playbackRate}
-          hideSkipButtons
-        />
-      ) : (
-        <div className="flex justify-center">
+    <AudioPlayer
+      audioUrl={audioUrl}
+      subtitle={
+        audioUrl
+          ? isUsingSampleText
+            ? "Using sample audio"
+            : "Standard text-to-speech without enhancements"
+          : "I've found that .25x less is equivalent in feeling"
+      }
+      title="Baseline Generated Audio"
+      initialRate={playbackRate ? Math.max(0.25, playbackRate - 0.25) : 1}
+      hideSkipButtons
+      disabled={!audioUrl}
+      overlayContent={
+        !audioUrl ? (
           <Button
             className="px-8"
             disabled={!hasText || loading}
             onClick={requestAudio}
             size="lg"
+            variant="outline"
           >
             {loading ? (
               <div className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent dark:border-white" />
                 Generating...
               </div>
             ) : (
               "Generate Original"
             )}
           </Button>
-        </div>
-      )}
-    </>
+        ) : undefined
+      }
+    />
   );
 }
