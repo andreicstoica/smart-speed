@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { createObjectUrlFromBuffer, revokeObjectUrl } from "../../lib/audio";
+import { useEffect, useState } from "react";
 import { SAMPLE_TEXT } from "@/constants/sample";
+import { createObjectUrlFromBuffer, revokeObjectUrl } from "../lib/audio";
 
 async function fetchTts(
     text: string,
@@ -63,7 +63,7 @@ export function useTts(text: string) {
         }
     };
 
-    // Auto-load sample audio on mount
+    // Handle text changes
     useEffect(() => {
         const isSample = text === SAMPLE_TEXT;
         setIsUsingSampleText(isSample);
@@ -74,6 +74,11 @@ export function useTts(text: string) {
             requestAudio().finally(() => {
                 setIsLoadingSample(false);
             });
+        } else if (!isSample && audioUrl) {
+            // Reset audio when text changes (except for sample text)
+            revokeObjectUrl(audioUrl);
+            setAudioUrl(undefined);
+            setError(null);
         }
     }, [text]);
 

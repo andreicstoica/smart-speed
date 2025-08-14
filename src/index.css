@@ -135,32 +135,32 @@ body {
 }
 
 .slider::-webkit-slider-thumb {
-  appearance: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
+	appearance: none;
+	height: 16px;
+	width: 16px;
+	border-radius: 50%;
+	background: #000;
+	cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  border: none;
+	height: 16px;
+	width: 16px;
+	border-radius: 50%;
+	background: #000;
+	cursor: pointer;
+	border: none;
 }
 
 .slider::-webkit-slider-track {
-  background: #e5e7eb;
-  border-radius: 8px;
-  height: 8px;
+	background: #e5e7eb;
+	border-radius: 8px;
+	height: 8px;
 }
 
 .slider::-moz-range-track {
-  background: #e5e7eb;
-  border-radius: 8px;
-  height: 8px;
-  border: none;
+	background: #e5e7eb;
+	border-radius: 8px;
+	height: 8px;
+	border: none;
 }

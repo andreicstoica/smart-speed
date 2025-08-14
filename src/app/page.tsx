@@ -1,24 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { Editors, useSampleText } from "../components/Editors";
-import { BaselineAudioPlayer } from "../components/BaselineAudioPlayer";
-import { SmartSpeedSection } from "../components/SmartSpeedSection";
+import { BaselineAudioPlayer } from "@/components/audio/BaselineAudioPlayer";
+import { Editors } from "@/components/Editors";
+import { SmartSpeedSection } from "@/components/SmartSpeedSection";
+import { ModelDetailsSection } from "@/components/ModelDetailsSection";
+import { IntroModal } from "@/components/IntroModal";
+import { useSampleText } from "@/lib/utils";
+import { useSmartSpeed } from "@/hooks/useSmartSpeed";
+import { useManualSpeedAdjustment } from "@/hooks/useManualSpeedAdjustment";
 import { Card } from "../components/ui/card";
+
+type ModelVersion = "v2" | "v3";
 
 export default function Home() {
   const sample = useSampleText();
   const [text, setText] = useState<string>(sample);
+  const [modelVersion, setModelVersion] = useState<ModelVersion>("v2");
+
+  // Initialize both hooks to get their transform results
+  const smartSpeed = useSmartSpeed(text);
+  const manualSpeed = useManualSpeedAdjustment(text);
+
+  // Get the appropriate transform result based on model version
+  const transformResult =
+    modelVersion === "v2"
+      ? manualSpeed.transformResult
+      : smartSpeed.transformResult;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-6">
-      <div className="mb-6">
-        <h1 className="font-semibold text-2xl">Smart Speed Adjustment</h1>
-        <p className="text-muted-foreground text-sm">Baseline vs Smart Speed</p>
-      </div>
+    <div className="container mx-auto max-w-6xl px-4 py-6">
+      <IntroModal />
 
       {/* Text Input */}
       <Card className="mb-6 p-4">
+        <div className="mb-2">
+          <div className="font-semibold text-lg">Paste some text</div>
+          <div className="text-muted-foreground text-sm">
+            I don't have a lot of credits left, so please use small sample texts
+            :)
+          </div>
+        </div>
         <Editors
           onChange={setText}
           onUseSample={() => setText(sample)}
@@ -26,16 +48,37 @@ export default function Home() {
         />
       </Card>
 
-      {/* Baseline Audio */}
-      <div className="mb-8">
-        <BaselineAudioPlayer text={text} />
+      {/* Model Details Section */}
+      <ModelDetailsSection
+        modelVersion={modelVersion}
+        setModelVersion={setModelVersion}
+        transformResult={transformResult}
+        text={text}
+        manualSpeed={manualSpeed}
+      />
+
+      {/* Audio Players Side by Side */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Baseline Audio */}
+        <div>
+          <BaselineAudioPlayer
+            text={text}
+            playbackRate={
+              modelVersion === "v3"
+                ? smartSpeed.transformResult?.params.speed
+                : manualSpeed.speed
+            }
+          />
+        </div>
+
+        {/* Smart Speed Audio */}
+        <SmartSpeedSection
+          text={text}
+          modelVersion={modelVersion}
+          setModelVersion={setModelVersion}
+          manual={manualSpeed}
+        />
       </div>
-
-      {/* Divider */}
-      <div className="border-t border-gray-200 dark:border-gray-800 mb-8 border-1" />
-
-      {/* Smart Speed Section */}
-      <SmartSpeedSection text={text} />
     </div>
   );
 }

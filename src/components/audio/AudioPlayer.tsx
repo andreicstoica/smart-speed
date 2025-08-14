@@ -1,28 +1,44 @@
-import { useState, useEffect, useRef } from "react";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 import {
-  Play,
   Pause,
-  Volume2,
-  VolumeX,
+  Play,
   RotateCcw,
   RotateCw,
+  Volume2,
+  VolumeX,
+  Download,
 } from "lucide-react";
-import { useAudioPlayer } from "./useAudioPlayer";
+import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 
 interface AudioPlayerProps {
   audioUrl?: string;
   title?: string;
   subtitle?: string;
+  description?: string;
   className?: string;
+  // Playback rate control
+  initialRate?: number; // if provided, set audio.playbackRate
+  lockRate?: boolean; // if true, hide speed toggle and prevent changes
+  hideSkipButtons?: boolean; // if true, hide rewind/forward buttons
+  // Disabled overlay mode
+  disabled?: boolean;
+  overlayContent?: ReactNode;
 }
 
 export function AudioPlayer({
   audioUrl,
   title,
   subtitle,
+  description,
   className,
+  initialRate,
+  lockRate,
+  hideSkipButtons,
+  disabled,
+  overlayContent,
 }: AudioPlayerProps) {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -41,14 +57,12 @@ export function AudioPlayer({
     skipTime,
     toggleSpeed,
     formatTime,
-  } = useAudioPlayer(audioUrl);
-
-  const speedOptions = [0.75, 1, 1.5, 2, 3];
-  const currentSpeedIndex = speedOptions.indexOf(playbackSpeed);
+  } = useAudioPlayer(audioUrl, {
+    initialRate,
+    lockRate,
+  });
 
   const handleSpeedToggle = () => {
-    const nextIndex = (currentSpeedIndex + 1) % speedOptions.length;
-    speedOptions[nextIndex];
     toggleSpeed();
   };
 
@@ -88,139 +102,177 @@ export function AudioPlayer({
       {/* Title and Subtitle */}
       {title && (
         <div className="text-center">
-          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+          <div className="mb-1 font-semibold text-gray-900 text-lg dark:text-gray-100">
             {title}
           </div>
           {subtitle && (
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-gray-500 text-sm dark:text-gray-400">
               {subtitle}
+            </div>
+          )}
+          {description && (
+            <div className="text-gray-500 text-sm dark:text-gray-400 mt-1">
+              {description}
             </div>
           )}
         </div>
       )}
-
-      {/* Main Player Controls */}
-      <div className="flex items-center gap-4">
-        {/* Play/Pause Button */}
-        <Button
-          onClick={togglePlay}
-          disabled={!audioUrl}
-          size="lg"
-          className="h-14 w-14 rounded-full p-0 bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 flex-shrink-0"
-        >
-          {isPlaying ? (
-            <Pause className="h-7 w-7 text-white dark:text-black" />
-          ) : (
-            <Play className="h-7 w-7 text-white dark:text-black ml-1" />
-          )}
-        </Button>
-
-        {/* Time and Progress Section */}
-        <div className="flex-1 space-y-2">
-          {/* Progress Bar */}
-          <div className="w-full">
-            <input
-              type="range"
-              min={0}
-              max={duration}
-              value={currentTime}
-              onChange={(e) => onScrub(Number(e.target.value))}
-              onMouseDown={onScrubStart}
-              onMouseUp={(e) =>
-                onScrubEnd(Number((e.target as HTMLInputElement).value))
-              }
-              className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-              disabled={!audioUrl}
-            />
-          </div>
-
-          {/* Time Display */}
-          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">{formatTime(currentTime)}</span>
-            <span className="font-medium">{formatTime(duration)}</span>
-          </div>
-        </div>
-
-        {/* Volume Control */}
-        <div className="relative flex-shrink-0" ref={volumeRef}>
+      <div className="relative">
+        {/* Main Player Controls */}
+        <div className="flex items-center gap-4">
+          {/* Play/Pause Button */}
           <Button
-            variant="ghost"
-            size="sm"
-            className="p-3 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={handleVolumeSliderToggle}
+            className="h-14 w-14 flex-shrink-0 rounded-full bg-black p-0 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200"
+            disabled={!audioUrl}
+            onClick={togglePlay}
+            size="lg"
           >
-            {volume === 0 ? (
-              <VolumeX className="h-6 w-6" />
-            ) : volume < 0.5 ? (
-              <Volume2 className="h-6 w-6" />
+            {isPlaying ? (
+              <Pause className="h-7 w-7 text-white dark:text-black" />
             ) : (
-              <Volume2 className="h-6 w-6" />
+              <Play className="ml-1 h-7 w-7 text-white dark:text-black" />
             )}
           </Button>
 
-          {/* Volume Slider */}
-          {showVolumeSlider && (
-            <div className="absolute bottom-full right-0 mb-2 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-              <div className="w-6 h-20 flex items-center justify-center">
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={volume}
-                  onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                  className="w-20 h-1 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                  style={{
-                    transform: "rotate(-90deg)",
-                    transformOrigin: "center",
-                  }}
-                />
-              </div>
+          {/* Time and Progress Section */}
+          <div className="flex-1 space-y-2">
+            {/* Progress Bar */}
+            <div className="w-full">
+              <input
+                className="slider h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+                disabled={!audioUrl}
+                max={duration}
+                min={0}
+                onChange={(e) => onScrub(Number(e.target.value))}
+                onMouseDown={onScrubStart}
+                onMouseUp={(e) =>
+                  onScrubEnd(Number((e.target as HTMLInputElement).value))
+                }
+                type="range"
+                value={currentTime}
+              />
             </div>
+
+            {/* Time Display */}
+            <div className="flex items-center justify-between text-gray-600 text-sm dark:text-gray-400">
+              <span className="font-medium">{formatTime(currentTime)}</span>
+              <span className="font-medium">{formatTime(duration)}</span>
+            </div>
+          </div>
+
+          {/* Volume Control */}
+          <div className="relative flex-shrink-0" ref={volumeRef}>
+            <Button
+              className="p-3 text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+              onClick={handleVolumeSliderToggle}
+              size="sm"
+              variant="ghost"
+            >
+              {volume === 0 ? (
+                <VolumeX className="h-6 w-6" />
+              ) : volume < 0.5 ? (
+                <Volume2 className="h-6 w-6" />
+              ) : (
+                <Volume2 className="h-6 w-6" />
+              )}
+            </Button>
+
+            {/* Volume Slider */}
+            {showVolumeSlider && (
+              <div className="absolute right-0 bottom-full mb-2 rounded-lg border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="flex h-20 w-6 items-center justify-center">
+                  <input
+                    className="slider h-1 w-20 cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+                    max={1}
+                    min={0}
+                    onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                    step={0.01}
+                    style={{
+                      transform: "rotate(-90deg)",
+                      transformOrigin: "center",
+                    }}
+                    type="range"
+                    value={volume}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Secondary Controls */}
+        <div className="flex items-center justify-center gap-4">
+          {/* Rewind 5s */}
+          {!hideSkipButtons && (
+            <Button
+              className="p-3 text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+              disabled={!audioUrl}
+              onClick={() => skipTime(-5)}
+              size="sm"
+              variant="ghost"
+            >
+              <RotateCcw className="h-5 w-5" />
+              <span className="ml-2 font-medium text-sm">5</span>
+            </Button>
+          )}
+
+          {/* Speed Toggle (hidden when locked) */}
+          {!lockRate && (
+            <Button
+              className="px-4 py-2 font-medium text-base text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+              disabled={!audioUrl}
+              onClick={handleSpeedToggle}
+              size="sm"
+              variant="ghost"
+            >
+              {playbackSpeed}x
+            </Button>
+          )}
+
+          {/* Download Button */}
+          {audioUrl && (
+            <Button
+              className="p-3 text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = audioUrl;
+                link.download = `${title || "audio"}.mp3`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+              size="sm"
+              variant="ghost"
+            >
+              <Download className="h-5 w-5" />
+            </Button>
+          )}
+
+          {/* Forward 5s */}
+          {!hideSkipButtons && (
+            <Button
+              className="p-3 text-gray-900 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+              disabled={!audioUrl}
+              onClick={() => skipTime(5)}
+              size="sm"
+              variant="ghost"
+            >
+              <span className="ml-2 font-medium text-sm">5</span>
+              <RotateCw className="h-5 w-5" />
+            </Button>
           )}
         </div>
-      </div>
 
-      {/* Secondary Controls */}
-      <div className="flex items-center justify-center gap-4">
-        {/* Rewind 5s */}
-        <Button
-          onClick={() => skipTime(-5)}
-          variant="ghost"
-          size="sm"
-          className="p-3 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
-          disabled={!audioUrl}
-        >
-          <RotateCcw className="h-5 w-5" />
-          <span className="ml-2 text-sm font-medium">5</span>
-        </Button>
-
-        {/* Speed Toggle */}
-        <Button
-          onClick={handleSpeedToggle}
-          variant="ghost"
-          size="sm"
-          className="px-4 py-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-base"
-          disabled={!audioUrl}
-        >
-          {playbackSpeed}x
-        </Button>
-
-        {/* Forward 5s */}
-        <Button
-          onClick={() => skipTime(5)}
-          variant="ghost"
-          size="sm"
-          className="p-3 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
-          disabled={!audioUrl}
-        >
-          <span className="ml-2 text-sm font-medium">5</span>
-          <RotateCw className="h-5 w-5" />
-        </Button>
+        {/* Absolute overlay over controls when disabled */}
+        {disabled && overlayContent && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/60 dark:bg-black/50">
+            {overlayContent}
+          </div>
+        )}
       </div>
 
       {/* Hidden audio element */}
-      {audioUrl && <audio ref={audioRef} src={audioUrl} preload="metadata" />}
+      {audioUrl && <audio preload="metadata" ref={audioRef} src={audioUrl} />}
     </Card>
   );
 }

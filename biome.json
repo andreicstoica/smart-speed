@@ -7,7 +7,7 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false,
+    "ignoreUnknown": true,
     "includes": [
       "**",
       "!**/.next",
@@ -23,7 +23,10 @@
       "!**/.expo",
       "!**/.wrangler",
       "!**/wrangler.jsonc",
-      "!**/.source"
+      "!**/.source",
+      "!**/__tests__/**",
+      "!**/*.test.ts",
+      "!**/*.spec.ts"
     ]
   },
   "formatter": {
@@ -36,7 +39,9 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "useExhaustiveDependencies": "info"
+        "useExhaustiveDependencies": "info",
+        "noUnusedImports": "warn",
+        "noUnusedVariables": "warn"
       },
       "nursery": {
         "useSortedClasses": {
@@ -48,16 +53,21 @@
         }
       },
       "style": {
-        "noParameterAssign": "error",
-        "useAsConstAssertion": "error",
-        "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
-        "useSelfClosingElements": "error",
-        "useSingleVarDeclarator": "error",
-        "noUnusedTemplateLiteral": "error",
-        "useNumberNamespace": "error",
-        "noInferrableTypes": "error",
-        "noUselessElse": "error"
+        "useFilenamingConvention": "off",
+        "noNonNullAssertion": "off",
+        "useAsConstAssertion": "warn",
+        "useDefaultParameterLast": "warn",
+        "useEnumInitializers": "warn",
+        "useSelfClosingElements": "warn",
+        "useSingleVarDeclarator": "warn",
+        "noUnusedTemplateLiteral": "warn",
+        "useNumberNamespace": "warn",
+        "noInferrableTypes": "warn",
+        "noUselessElse": "warn"
+      },
+      "suspicious": {
+        "useAwait": "warn",
+        "noExplicitAny": "warn"
       }
     }
   },

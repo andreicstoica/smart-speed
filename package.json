@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "check": "biome check --write .",
-    "test": "tsx src/lib/__tests__/tagging.test.ts"
+    "test": "tsx src/lib/__tests__/tagging.test.ts",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.9.0",
@@ -31,14 +32,16 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.2",
-    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/postcss": "^4.1.11",
     "@tanstack/react-query-devtools": "^5.80.5",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
     "jest": "^30.0.5",
-    "tailwindcss": "^4.1.10",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
     "ts-jest": "^29.4.1",
     "typescript": "^5",
     "ultracite": "5.1.2"

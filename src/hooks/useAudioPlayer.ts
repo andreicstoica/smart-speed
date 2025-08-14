@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useAudioPlayer(audioUrl?: string) {
+interface PlayerOptions {
+    initialRate?: number;
+    lockRate?: boolean;
+    speedOptions?: number[];
+}
+
+export function useAudioPlayer(audioUrl?: string, options: PlayerOptions = {}) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isSeeking, setIsSeeking] = useState(false);
-    const [playbackSpeed, setPlaybackSpeed] = useState(1);
+    const [playbackSpeed, setPlaybackSpeed] = useState(options.initialRate ?? 1);
 
-    const speedOptions = [0.75, 1, 1.5, 2, 3];
+    const speedOptions = options.speedOptions ?? [0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3];
 
     // Reset when new audio loads
     useEffect(() => {
@@ -22,7 +28,11 @@ export function useAudioPlayer(audioUrl?: string) {
         const audio = audioRef.current;
         if (!audio) return;
 
-        const onLoaded = () => setDuration(audio.duration || 0);
+        const onLoaded = () => {
+            setDuration(audio.duration || 0);
+            // Ensure playback rate is applied on metadata load
+            audio.playbackRate = options.initialRate ?? playbackSpeed;
+        };
         const onTime = () => {
             if (!isSeeking) setCurrentTime(audio.currentTime || 0);
         };
@@ -39,12 +49,25 @@ export function useAudioPlayer(audioUrl?: string) {
         };
     }, [audioUrl, isSeeking]);
 
+    // Respond to external initialRate changes
+    useEffect(() => {
+        if (typeof options.initialRate === 'number') {
+            setPlaybackSpeed(options.initialRate);
+            const audio = audioRef.current;
+            if (audio) {
+                audio.playbackRate = options.initialRate;
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [options.initialRate]);
+
     const togglePlay = () => {
         const audio = audioRef.current;
         if (!audio) return;
 
         if (audio.paused) {
-            audio.play()
+            audio
+                .play()
                 .then(() => setIsPlaying(true))
                 .catch(() => { });
         } else {
@@ -64,10 +87,14 @@ export function useAudioPlayer(audioUrl?: string) {
     const skipTime = (seconds: number) => {
         const audio = audioRef.current;
         if (!audio) return;
-        audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + seconds));
+        audio.currentTime = Math.max(
+            0,
+            Math.min(audio.duration, audio.currentTime + seconds)
+        );
     };
 
     const toggleSpeed = () => {
+        if (options.lockRate) return; // locked rate, do nothing
         const currentIndex = speedOptions.indexOf(playbackSpeed);
         const nextIndex = (currentIndex + 1) % speedOptions.length;
         const newSpeed = speedOptions[nextIndex];

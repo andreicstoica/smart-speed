@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "./ui/button";
+import { SAMPLE_TEXT } from "../constants/sample";
 
 const schema = z.object({
   text: z.string().min(1).max(5000),
 });
-
-import { SAMPLE_TEXT } from "../constants/sample";
 
 export type EditorsProps = {
   value: string;
@@ -23,9 +22,6 @@ export function Editors(props: EditorsProps) {
   return (
     <div className="grid gap-2">
       <div className="flex items-center justify-between gap-2">
-        <div className="text-muted-foreground text-sm">
-          Paste text (≤ 5k chars)
-        </div>
         <div className="flex gap-2">
           <Button
             onClick={() => onChange("")}
@@ -34,7 +30,7 @@ export function Editors(props: EditorsProps) {
           >
             Clear
           </Button>
-          <Button onClick={onUseSample} type="button">
+          <Button onClick={onUseSample} type="button" variant="secondary">
             Load Original Sample
           </Button>
         </div>
@@ -53,8 +49,4 @@ export function Editors(props: EditorsProps) {
       {error ? <div className="text-red-500 text-xs">{error}</div> : null}
     </div>
   );
-}
-
-export function useSampleText(): string {
-  return SAMPLE_TEXT;
 }
