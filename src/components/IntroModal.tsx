@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-import { INTRO_TEXT, INTRO_DETAILS } from "@/constants/intro";
+import {
+  INTRO_TEXT,
+  INTRO_DETAILS,
+  INTRO_IMPROVEMENTS,
+} from "@/constants/intro";
 
 export function IntroModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,16 +42,27 @@ export function IntroModal() {
         <div className="overflow-y-auto">
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-base">Why I made this</h3>
+              <h3 className="mb-1 font-semibold text-base">Why I made this</h3>
               <p className="whitespace-pre-wrap text-sm leading-relaxed">
                 {INTRO_TEXT}
               </p>
             </div>
 
             <div className="border-t pt-4">
-              <h3 className="font-semibold text-base">How I used ElevenLabs</h3>
+              <h3 className="mb-1 font-semibold text-base">
+                How I used ElevenLabs
+              </h3>
               <p className="whitespace-pre-wrap text-sm leading-relaxed">
                 {INTRO_DETAILS}
+              </p>
+            </div>
+
+            <div className="border-t pt-4">
+              <h3 className="mb-1 font-semibold text-base">
+                How I Made V2 Work
+              </h3>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                {INTRO_IMPROVEMENTS}
               </p>
             </div>
           </div>
