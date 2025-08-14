@@ -17,7 +17,7 @@ export interface VoicePreset {
 }
 
 // V2-specific presets (simplified, no style tags)
-export const V2_PRESETS = {
+export const V2_PRESETS: Record<VoiceStyle, VoicePreset> = {
 	bedtime: {
 		speed: 0.9,
 		apply_text_normalization: false, // V1 doesn't support normalization
