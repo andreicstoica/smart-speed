@@ -32,6 +32,13 @@ export function SmartSpeedSection({
   // Always call hooks in the same order
   const smartSpeed = useSmartSpeed(text);
 
+  // Auto-select energetic style for V3 mode (gives us 2x speed)
+  useEffect(() => {
+    if (modelVersion === "v3" && !smartSpeed.selectedStyle && text.trim()) {
+      smartSpeed.selectStyle("energetic");
+    }
+  }, [modelVersion, smartSpeed.selectedStyle, text, smartSpeed]);
+
   // Preloaded audio URL for the 2x sped up example
   const preloadedAudioUrl = "/audio/smart-audio-example-2x.mp3";
 
@@ -46,13 +53,6 @@ export function SmartSpeedSection({
       />
     );
   }
-
-  // Auto-select energetic style for V3 mode (gives us 2x speed)
-  useEffect(() => {
-    if (modelVersion === "v3" && !smartSpeed.selectedStyle && text.trim()) {
-      smartSpeed.selectStyle("energetic");
-    }
-  }, [modelVersion, smartSpeed.selectedStyle, text, smartSpeed]);
 
   const handleGenerateAudio = () => {
     smartSpeed.generateSmartAudio();

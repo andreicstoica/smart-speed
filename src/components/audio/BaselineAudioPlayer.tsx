@@ -22,10 +22,10 @@ export function BaselineAudioPlayer({
           ? isUsingSampleText
             ? "Using sample audio"
             : "Standard text-to-speech without enhancements"
-          : "I've found that .25x less is equivalent in feeling"
+          : "I've found -0.15x is equivalent in feeling"
       }
       title="Baseline Generated Audio"
-      initialRate={playbackRate ? Math.max(0.25, playbackRate - 0.25) : 1}
+      initialRate={playbackRate ? Math.max(0.15, playbackRate - 0.15) : 1}
       hideSkipButtons
       disabled={!audioUrl}
       overlayContent={

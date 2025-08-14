@@ -50,7 +50,7 @@ export const VOICE_PRESETS: Record<VoiceStyle, VoicePreset> = {
 	bedtime: {
 		speed: 0.9,
 		apply_text_normalization: true,
-		model_id: "eleven_v3",
+		model_id: "eleven_multilingual_v3",
 		voice_id: "GUDYcgRAONiI1nXDcNQQ", // Milo voice
 		tags: {
 			opening: ["[gentle tone]"],
@@ -64,7 +64,7 @@ export const VOICE_PRESETS: Record<VoiceStyle, VoicePreset> = {
 	energetic: {
 		speed: 1.12,
 		apply_text_normalization: true,
-		model_id: "eleven_v3",
+		model_id: "eleven_multilingual_v3",
 		voice_id: "JBFqnCBsd6RMkjVDRZzb", // George voice
 		tags: {
 			breaks: {
