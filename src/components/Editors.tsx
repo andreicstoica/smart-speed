@@ -22,9 +22,6 @@ export function Editors(props: EditorsProps) {
   return (
     <div className="grid gap-2">
       <div className="flex items-center justify-between gap-2">
-        <div className="text-muted-foreground text-sm">
-          Paste text (≤ 5k chars)
-        </div>
         <div className="flex gap-2">
           <Button
             onClick={() => onChange("")}

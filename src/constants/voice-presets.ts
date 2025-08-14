@@ -16,8 +16,8 @@ export interface VoicePreset {
 	};
 }
 
-// V1-specific presets (simplified, no style tags)
-export const V1_PRESETS = {
+// V2-specific presets (simplified, no style tags)
+export const V2_PRESETS = {
 	bedtime: {
 		speed: 0.9,
 		apply_text_normalization: false, // V1 doesn't support normalization

@@ -5,7 +5,7 @@ import { Card } from "./ui/card";
 import { DiffPanel } from "./audio/DiffPanel";
 import { Label } from "./ui/label";
 import { useSmartSpeed } from "@/hooks/useSmartSpeed";
-import { useManualSpeedAdjustment } from "@/hooks/useManualSpeedAdjustment";
+import type { ManualHookReturn } from "@/hooks/useManualSpeedAdjustment";
 
 type ModelVersion = "v2" | "v3";
 
@@ -14,6 +14,7 @@ interface ModelDetailsSectionProps {
   setModelVersion: (version: ModelVersion) => void;
   transformResult?: any; // Will be passed from parent
   text: string; // Add text prop for DiffPanel
+  manualSpeed: ManualHookReturn; // shared manual state
 }
 
 export function ModelDetailsSection({
@@ -21,10 +22,10 @@ export function ModelDetailsSection({
   setModelVersion,
   transformResult,
   text,
+  manualSpeed,
 }: ModelDetailsSectionProps) {
   const [selectedStyle, setSelectedStyle] = useState<VoiceStyle | null>(null);
   const smartSpeed = useSmartSpeed(text);
-  const manualSpeed = useManualSpeedAdjustment(text);
 
   const handleStyleSelect = (style: VoiceStyle) => {
     setSelectedStyle(style);
@@ -37,9 +38,9 @@ export function ModelDetailsSection({
     <div className="space-y-6">
       <Card className="mb-6 p-4">
         <div className="mb-4">
-          <h3 className="mb-2 font-semibold text-lg">Model Details</h3>
+          <h3 className="mb-2 font-semibold text-lg">Peek under the hood</h3>
           <p className="text-muted-foreground text-sm">
-            Select model version and view processing details
+            Select model version and see other parameters
           </p>
         </div>
 

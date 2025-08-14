@@ -32,13 +32,13 @@ export default function Home() {
     <div className="container mx-auto max-w-6xl px-4 py-6">
       <IntroModal />
 
-      <div className="mb-6">
-        <h1 className="font-semibold text-2xl">Smart Speed Adjustment</h1>
-        <p className="text-muted-foreground text-sm">Baseline vs Smart Speed</p>
-      </div>
-
       {/* Text Input */}
       <Card className="mb-6 p-4">
+        <div className="font-semibold text-lg">Paste some text</div>
+        <div className="text-muted-foreground text-sm">
+          Use less than ≤ 1k chars to keep it speedy, I also only have $5 of
+          credits :D
+        </div>
         <Editors
           onChange={setText}
           onUseSample={() => setText(sample)}
@@ -52,29 +52,23 @@ export default function Home() {
         setModelVersion={setModelVersion}
         transformResult={transformResult}
         text={text}
+        manualSpeed={manualSpeed}
       />
 
       {/* Audio Players Side by Side */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Baseline Audio */}
         <div>
-          <BaselineAudioPlayer text={text} />
+          <BaselineAudioPlayer text={text} playbackRate={manualSpeed.speed} />
         </div>
 
         {/* Smart Speed Audio */}
-        <Card className="p-6">
-          <div className="mb-4 text-center">
-            <div className="font-medium text-lg">Smart Speed Audio</div>
-            <div className="text-muted-foreground text-sm">
-              Enhanced with timing and expression tags
-            </div>
-          </div>
-          <SmartSpeedSection
-            text={text}
-            modelVersion={modelVersion}
-            setModelVersion={setModelVersion}
-          />
-        </Card>
+        <SmartSpeedSection
+          text={text}
+          modelVersion={modelVersion}
+          setModelVersion={setModelVersion}
+          manual={manualSpeed}
+        />
       </div>
     </div>
   );

@@ -49,6 +49,18 @@ export function useAudioPlayer(audioUrl?: string, options: PlayerOptions = {}) {
         };
     }, [audioUrl, isSeeking]);
 
+    // Respond to external initialRate changes
+    useEffect(() => {
+        if (typeof options.initialRate === 'number') {
+            setPlaybackSpeed(options.initialRate);
+            const audio = audioRef.current;
+            if (audio) {
+                audio.playbackRate = options.initialRate;
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [options.initialRate]);
+
     const togglePlay = () => {
         const audio = audioRef.current;
         if (!audio) return;

@@ -17,12 +17,14 @@ interface SmartSpeedSectionProps {
   text: string;
   modelVersion: ModelVersion;
   setModelVersion: (version: ModelVersion) => void;
+  manual: import("@/hooks/useManualSpeedAdjustment").ManualHookReturn;
 }
 
 export function SmartSpeedSection({
   text,
   modelVersion,
   setModelVersion,
+  manual,
 }: SmartSpeedSectionProps) {
   const [selectedStyle, setSelectedStyle] = useState<VoiceStyle | null>(null);
 
@@ -39,6 +41,7 @@ export function SmartSpeedSection({
         text={text}
         modelVersion={modelVersion}
         setModelVersion={setModelVersion}
+        manual={manual}
       />
     );
   }

@@ -5,9 +5,13 @@ import { Card } from "../ui/card";
 
 interface BaselineAudioPlayerProps {
   text: string;
+  playbackRate?: number;
 }
 
-export function BaselineAudioPlayer({ text }: BaselineAudioPlayerProps) {
+export function BaselineAudioPlayer({
+  text,
+  playbackRate,
+}: BaselineAudioPlayerProps) {
   const { audioUrl, requestAudio, loading, isUsingSampleText } = useTts(text);
   const hasText = text.trim().length > 0;
 
@@ -23,6 +27,7 @@ export function BaselineAudioPlayer({ text }: BaselineAudioPlayerProps) {
               : "Standard text-to-speech without enhancements"
           }
           title="Baseline Generated Audio"
+          initialRate={playbackRate}
         />
       ) : (
         <div className="flex justify-center">

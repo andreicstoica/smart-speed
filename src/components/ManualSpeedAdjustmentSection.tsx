@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { AudioPlayer } from "./audio/AudioPlayer";
 import { Button } from "./ui/button";
-import { useManualSpeedAdjustment } from "@/hooks/useManualSpeedAdjustment";
+import type { ManualHookReturn } from "@/hooks/useManualSpeedAdjustment";
 
 type ModelVersion = "v2" | "v3";
 
@@ -11,19 +11,62 @@ interface Props {
   text: string;
   modelVersion: ModelVersion;
   setModelVersion: (version: ModelVersion) => void;
+  manual: ManualHookReturn;
 }
 
 export function ManualSpeedAdjustmentSection({
   text,
   modelVersion,
   setModelVersion,
+  manual,
 }: Props) {
-  const manual = useManualSpeedAdjustment(text);
-
   const hasText = useMemo(() => text.trim().length > 0, [text]);
+
+  // Preloaded audio URL for the 2x sped up example
+  const preloadedAudioUrl = "/audio/smart-audio-example-2x.mp3";
+
+  // Check if speed matches the preloaded audio (2x)
+  const speedMatchesPreloaded = manual.speed === 2.0;
 
   return (
     <>
+      {/* Smart Speed Example Audio - show player or generate button */}
+      <AudioPlayer
+        audioUrl={speedMatchesPreloaded ? preloadedAudioUrl : undefined}
+        subtitle={
+          speedMatchesPreloaded
+            ? "Preloaded 2x speed example audio"
+            : `Speed changed from 2x - generate new audio for ${manual.speed.toFixed(
+                2
+              )}x`
+        }
+        title="Smart Speed Example Audio"
+        initialRate={2}
+        lockRate
+        hideSkipButtons
+        disabled={!speedMatchesPreloaded}
+        overlayContent={
+          !speedMatchesPreloaded ? (
+            <Button
+              className="px-8"
+              disabled={!hasText || manual.loading}
+              onClick={manual.generateSmartAudio}
+              size="lg"
+              variant="outline"
+            >
+              {manual.loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent dark:border-white" />
+                  Generating...
+                </div>
+              ) : (
+                "Generate New Audio"
+              )}
+            </Button>
+          ) : undefined
+        }
+      />
+
       {manual.smartAudioUrl ? (
         <AudioPlayer
           audioUrl={manual.smartAudioUrl}
@@ -33,25 +76,7 @@ export function ManualSpeedAdjustmentSection({
           lockRate
           hideSkipButtons
         />
-      ) : (
-        <div className="flex justify-center">
-          <Button
-            className="px-8"
-            disabled={!hasText || manual.loading}
-            onClick={manual.generateSmartAudio}
-            size="lg"
-          >
-            {manual.loading ? (
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Generating...
-              </div>
-            ) : (
-              "Generate New Audio"
-            )}
-          </Button>
-        </div>
-      )}
+      ) : null}
 
       {manual.error && (
         <div className="mt-4 rounded-lg bg-red-50 p-3 dark:bg-red-900/20">

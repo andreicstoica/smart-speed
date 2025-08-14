@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { TransformResult } from "@/lib/tagging";
-import { transformTextForStyle } from "@/lib/tagging";
-import { V1_PRESETS } from "@/constants/voice-presets";
+import { V2_PRESETS } from "@/constants/voice-presets";
 
 export type ManualState = "IDLE" | "PROCESSING" | "READY" | "ERROR";
 
@@ -59,7 +58,7 @@ function createAudioUrl(buffer: ArrayBuffer): string {
 
 export function useManualSpeedAdjustment(text: string): ManualHookReturn {
     const [state, setState] = useState<ManualState>("IDLE");
-    const [speed, setSpeedState] = useState<number>(1.0);
+    const [speed, setSpeedState] = useState<number>(2.0); // Changed from 1.0 to 2.0
     const [normalization, setNormalizationState] = useState<boolean>(false); // V2 doesn't support normalization
     const [transformResult, setTransformResult] = useState<TransformResult | null>(
         null
@@ -85,7 +84,7 @@ export function useManualSpeedAdjustment(text: string): ManualHookReturn {
         }
 
         // Use V2 presets for manual mode (voice only)
-        const v2Preset = V1_PRESETS[derivedStyle as "bedtime" | "energetic"];
+        const v2Preset = V2_PRESETS[derivedStyle as "bedtime" | "energetic"];
 
         const cleanText = text.trim();
         const wordCount = cleanText.split(/\s+/).length;
